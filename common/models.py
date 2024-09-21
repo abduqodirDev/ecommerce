@@ -1,5 +1,7 @@
 from django.db import models
 
+from common.validators import UrlCheckValidator
+
 
 class Media(models.Model):
     class FileType(models.TextChoices):
@@ -12,7 +14,7 @@ class Media(models.Model):
     type = models.CharField(max_length=10, choices=FileType.choices)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Settings(models.Model):
@@ -43,10 +45,10 @@ class Region(models.Model):
 
 class OurInstagramStories(models.Model):
     image = models.ForeignKey(Media, on_delete=models.SET_NULL, related_name='instagram_stores', null=True, blank=True)
-    story_link = models.URLField()      # write validatsiya
+    story_link = models.URLField(validators=[UrlCheckValidator])
 
     def __str__(self):
-        return self.id
+        return str(self.story_link)
 
 
 class CustomerFeedback(models.Model):

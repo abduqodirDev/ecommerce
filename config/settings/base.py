@@ -6,8 +6,7 @@ env = environ.Env(
 environ.Env.read_env('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -35,7 +34,9 @@ LOCAL_APPS = [
     'product',
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'ckeditor',
+]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -131,3 +132,19 @@ AUTH_USER_MODEL = 'account.User'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_CONFIGS = {
+    'awesome_ckeditor': {
+        'toolbar': 'Basic',
+    },
+}
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 500,
+        'width': 900,
+    },
+}
