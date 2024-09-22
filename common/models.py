@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.core.validators import FileExtensionValidator
 
 from common.validators import UrlCheckValidator
 
@@ -10,11 +12,28 @@ class Media(models.Model):
         MUSIC = 'music', 'music'
         VIDEO = 'video', 'video'
 
-    file = models.FileField(upload_to='files/')
+    file = models.FileField(upload_to='files/', validators=[
+        FileExtensionValidator(allowed_extensions=['.png', '.jpg', 'jpeg', 'gif', 'mp4', 'mp3', 'wav', 'flac', '.doc', '.pdf'])])
     type = models.CharField(max_length=10, choices=FileType.choices)
 
     def __str__(self):
         return str(self.id)
+
+    def clean(self):
+        if self.type == Media.FileType.IMAGE:
+            if not self.file.name.endswitch(['.png', '.jpg', '.jpeg', '.gif']):
+                raise ValidationError("file type is not image")
+        elif self.type == Media.FileType.FILE:
+            if not self.file.name.endswitch(['.doc', '.pdf']):
+                raise ValidationError("file type is not file")
+        elif self.type == Media.FileType.MUSIC:
+            if not self.file.name.endswitch(['.mp3', '.flac']):
+                raise ValidationError("file type is not music")
+        elif self.type == Media.FileType.VIDEO:
+            if not self.file.name.endswitch(['.mp4']):
+                raise ValidationError("file type is not video")
+        else:
+            raise ValidationError("File type is invalid")
 
 
 class Settings(models.Model):
@@ -36,7 +55,6 @@ class Country(models.Model):
 
 class Region(models.Model):
     name = models.CharField(max_length=50)
-    code = models.CharField(max_length=2)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, related_name='regions', null=True, blank=True)
 
     def __str__(self):

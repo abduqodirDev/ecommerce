@@ -8,4 +8,9 @@ admin.site.register(Settings)
 admin.site.register(Country)
 admin.site.register(Region)
 admin.site.register(OurInstagramStories)
-admin.site.register(CustomerFeedback)
+
+class CustomerFeedbackAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+admin.site.register(CustomerFeedback, CustomerFeedbackAdmin)

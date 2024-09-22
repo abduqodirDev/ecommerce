@@ -20,7 +20,7 @@ class UserAddressAdmin(admin.ModelAdmin):
 class UserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "phone_number")}),
         (
             _("Permissions"),
             {
