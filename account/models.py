@@ -31,6 +31,7 @@ class VerificationOtp(models.Model):
     code = models.IntegerField(validators=[check_otp_code])
     type = models.CharField(max_length=1, choices=VERIFY_TYPE)
     expires_at = models.DateTimeField()
+    is_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user} | code: {self.code}"

@@ -17,3 +17,5 @@ def create_verification_otpcode(sender, instance, created, **kwargs):
         print('code:', code)
         send_email(code, instance.email)
 
+
+
