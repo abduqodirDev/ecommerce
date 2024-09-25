@@ -1,3 +1,10 @@
 from django.shortcuts import render
+from rest_framework.generics import ListAPIView
 
-# Create your views here.
+from .models import Media
+from .serializers import MediaSerializer
+
+
+class MediaListAPIView(ListAPIView):
+    queryset = Media.objects.all()
+    serializer_class = MediaSerializer

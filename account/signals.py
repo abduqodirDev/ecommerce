@@ -13,8 +13,6 @@ def create_verification_otpcode(sender, instance, created, **kwargs):
         code = generate_code()
         VerificationOtp.objects.create(user=instance, type='1',
                                        code=code, expires_at=datetime.now()+timedelta(minutes=5))
-
-        print('code:', code)
         send_email(code, instance.email)
 
 
