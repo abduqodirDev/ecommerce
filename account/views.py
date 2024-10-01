@@ -13,7 +13,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from account.models import User, VerificationOtp
 from account.serializers import UserCreateSerializer, VerificationOtpSerializer, LoginSerializer, \
 PasswordResetSerializer, PasswordResetVerifySerializer, PasswordResetFinishSerializer
-from account.utils import generate_code, send_email
+from account.tasks import send_otp_code_to_email
+from account.utils import generate_code
 
 
 class UserCreateView(CreateAPIView):
@@ -36,7 +37,7 @@ class VerificationOtpView(APIView):
             serializer.is_valid(raise_exception=True)
             user = User.objects.get(email=data.get('email'))
             sms = VerificationOtp.objects.filter(code=data.get('code'), user=user, type='1',
-                                                 is_confirmed=False)
+                                                 is_confirmed=False, expires_at__gte=datetime.now())
             if not sms.exists():
                 context = {
                     'status':False,
@@ -45,12 +46,12 @@ class VerificationOtpView(APIView):
                 raise ValidationError(context)
 
             sms = sms.order_by('-id').first()
-            if sms.expires_at <= timezone.localtime(timezone.now()):
-                context = {
-                    'status':False,
-                    'message':'code is not actived'
-                }
-                raise ValidationError(context)
+            # if sms.expires_at <= timezone.localtime(timezone.now()):
+            #     context = {
+            #         'status':False,
+            #         'message':'code is not actived'
+            #     }
+            #     raise ValidationError(context)
 
             user.is_active=True
             sms.is_confirmed=True
@@ -111,7 +112,7 @@ class PasswordResetView(APIView):
             code = generate_code()
             VerificationOtp.objects.create(user=user, type='2',
                                            code=code, expires_at=datetime.now() + timedelta(minutes=5))
-            send_email(code, user.email)
+            send_otp_code_to_email(code, user.email)
             context = {
                 'status': True,
                 'message': 'send code your email address'

@@ -44,10 +44,10 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     image = models.ForeignKey(Media, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Product image'
@@ -56,7 +56,7 @@ class ProductImage(models.Model):
 
 class ProductColor(models.Model):
     image = models.ForeignKey(Media, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="colors")
 
     def __str__(self):
         return self.product.name
@@ -68,10 +68,10 @@ class ProductColor(models.Model):
 
 class ProductSize(models.Model):
     value = models.CharField(max_length=30)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="sizes")
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = 'Product size'
