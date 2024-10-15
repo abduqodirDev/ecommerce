@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from account.models import User
+from account.models import User, UserAddress
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -70,5 +70,10 @@ class PasswordResetFinishSerializer(serializers.Serializer):
 
         return data
 
+
+class UserCreateAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAddress
+        fields = ['name', 'phone_number', 'apartment', 'street', 'pin_code']
 
 

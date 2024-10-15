@@ -5,14 +5,15 @@ from django.shortcuts import render
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import APIException, ValidationError
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from account.models import User, VerificationOtp
+from account.models import User, VerificationOtp, UserAddress
 from account.serializers import UserCreateSerializer, VerificationOtpSerializer, LoginSerializer, \
-PasswordResetSerializer, PasswordResetVerifySerializer, PasswordResetFinishSerializer
+PasswordResetSerializer, PasswordResetVerifySerializer, PasswordResetFinishSerializer, UserCreateAddressSerializer
 from account.tasks import send_otp_code_to_email
 from account.utils import generate_code
 
@@ -200,3 +201,21 @@ class PasswordResetFinishView(APIView):
         except Exception as e:
             raise e
 
+
+class UserAddressCreateView(CreateAPIView, ListAPIView):
+    queryset = UserAddress.objects.all()
+    serializer_class = UserCreateAddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return UserAddress.objects.filter(user=self.request.user)
+
+
+class UserAddressUpdateView(UpdateAPIView):
+    queryset = UserAddress.objects.all()
+    serializer_class = UserCreateAddressSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
